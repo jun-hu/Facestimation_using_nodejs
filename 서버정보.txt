@@ -1,0 +1,3 @@
+root/ !Root419419
+simkhung/tunituni904
+접속할때는 211.249.50.30:포트번호

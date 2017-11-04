@@ -1,0 +1,41 @@
+:q
+var express = require('express');
+var bodyParser= require('body-parser');//post할때 필요
+var multer = require('multer'); //업로드할 때 필요
+var request = require('request');
+var app=express();
+
+var _storage = multer.diskStorage({ //이 객체의 프로퍼티는 2개갖고 있다.
+   destination: function (req, file, cb) {
+     cb(null, 'uploads/');//업로드 위치를 저장하는 path함수
+   },
+   filename: function (req, file, cb) {
+    // cb(null, file.originalname); //저장할 파일명
+      cb(null, 'mypic.jpg');
+   }
+ })
+ var upload = multer({ storage: _storage});
+app.locals.pretty = true;
+
+app.engine('html', require('ejs').renderFile);
+app.set('views','./views');
+app.set('view engine', 'html');
+app.use('/user',express.static('uploads'));
+app.use(bodyParser.urlencoded({extended:false}));
+
+app.get('/home', function(req,res){
+  res.render('upload');
+//  res.render('face2', {data: 'uploads/내사진.jpg'});
+/*  fs.readFile('./public/face2.html','utf-8',function(error,data){
+  res.writeHead(200, {'Content-Type' : 'text/html'});
+  res.end(data);*/
+})
+app.post('/uploads',upload.single('userfile'),function(req,res){
+  //res.send('Uploaded! : '+req.file); // object를 리턴함
+  console.log(req.file); // 콘솔(터미널)을 통해서 req.file Object 내용 확인 가능.
+  res.render('face2');
+
+})
+app.listen(8080, function(){
+  console.log("connnected, 8080 port!");
+})
